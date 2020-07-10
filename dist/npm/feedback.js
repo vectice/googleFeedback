@@ -1,4 +1,6 @@
-'use strict';
+/* eslint-disable array-callback-return */
+/* eslint-disable no-restricted-globals */
+/* eslint-disable eqeqeq */
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -187,11 +189,14 @@ var Feedback = function (_React$Component) {
 
         _this.state = {
             docWidth: document.body.clientWidth,
-            docHeight: document.body.clientHeight,
-            winHeight: window.innerHeight,
+            docHeight: document.body.scrollHeight,
+            winHeight: document.body.scrollHeight,
             device: 'pc',
+            title: '',
+            titleError: '',
             text: '',
             textError: '',
+            suggestOn: true,
             shotOpen: true,
             loading: false,
             screenshotEdit: false,
@@ -310,6 +315,7 @@ var Feedback = function (_React$Component) {
             this.refs.canvas.style.cursor = 'crosshair';
             if (el && hightLightEl.indexOf(el.nodeName.toLocaleLowerCase()) > -1) {
                 var rect = el.getBoundingClientRect();
+                console.log(rect);
                 var rectInfo = {
                     sx: rect.left + (document.documentElement.scrollLeft + document.body.scrollLeft),
                     sy: rect.top + (document.documentElement.scrollTop + document.body.scrollTop),
@@ -448,7 +454,7 @@ var Feedback = function (_React$Component) {
             var _this3 = this;
 
             var docWidth = document.body.clientWidth,
-                docHeight = document.body.clientHeight;
+                docHeight = document.body.scrollHeight;
             var windowHeight = window.innerHeight;
             if (docHeight < windowHeight) {
                 docHeight = windowHeight;
@@ -544,6 +550,13 @@ var Feedback = function (_React$Component) {
             });
         }
     }, {
+        key: 'suggestHandle',
+        value: function suggestHandle() {
+            this.setState({
+                suggestOn: !this.state.suggestOn
+            });
+        }
+    }, {
         key: 'checkboxHandle',
         value: function checkboxHandle() {
             this.setState({
@@ -607,11 +620,11 @@ var Feedback = function (_React$Component) {
                     hightlightItem = this.state.hightlightItem,
                     blackItem = this.state.blackItem,
                     obj = {
-                    sx: clientX,
-                    sy: clientY,
-                    width: width,
-                    height: height
-                };
+                        sx: clientX,
+                        sy: clientY,
+                        width: width,
+                        height: height
+                    };
                 if (width < 0) {
                     obj.sx = obj.sx + width;
                     obj.width = Math.abs(width);
@@ -701,8 +714,9 @@ var Feedback = function (_React$Component) {
                     proxy: _this9.props.proxy || '',
                     width: window.innerWidth,
                     height: window.innerHeight,
-                    x: document.documentElement.scrollLeft || document.body.scrollLeft,
-                    y: document.documentElement.scrollTop || document.body.scrollTop
+                    // x: document.documentElement.scrollLeft || document.body.scrollLeft,
+                    // y: document.documentElement.scrollTop || document.body.scrollTop,
+                    scrollY: -window.scrollY
                 }).then(function (canvas) {
                     var src = canvas.toDataURL('image/png');
                     _this9.refs.screenshotPrev.src = src;
@@ -779,10 +793,18 @@ var Feedback = function (_React$Component) {
                 this.snackbar(this.props.loadingTip || '正在加载屏幕截图...');
                 return;
             }
+            var title = this.state.title;
+            if (!title) {
+                this.setState({
+                    titleError: this.props.requiredTip || 'Title must be added'
+                });
+                this.refs.textarea.focus();
+                return;
+            }
             var text = this.state.text;
             if (!text) {
                 this.setState({
-                    textError: this.props.requiredTip || '必须添加说明'
+                    textError: this.props.requiredTip || 'Description must be added'
                 });
                 this.refs.textarea.focus();
                 return;
@@ -791,7 +813,9 @@ var Feedback = function (_React$Component) {
             if (typeof this.props.send === 'function') {
                 var data = {
                     sysInfo: this.sysInfo,
-                    text: this.state.text
+                    title: this.state.title,
+                    text: this.state.text,
+                    type: this.state.suggestOn
                 };
                 if (this.state.shotOpen) {
                     data.shot = this.refs.screenshotPrev.src || '';
@@ -814,22 +838,20 @@ var Feedback = function (_React$Component) {
                 props = this.props;
             return _react2.default.createElement(
                 'div',
-                { id: 'googleFeedback', style: { height: state.docHeight + 'px' }, onMouseMove: this.handleMouseMove.bind(this),
-                    onMouseUp: this.handleMoveMouseUp.bind(this) },
+                {
+                    id: 'googleFeedback', style: { height: state.docHeight + 'px' }, onMouseMove: this.handleMouseMove.bind(this),
+                    onMouseUp: this.handleMoveMouseUp.bind(this)
+                },
                 state.device == 'pc' ? _react2.default.createElement(
                     'div',
                     { className: 'feedback-window' },
                     !state.editMode ? _react2.default.createElement('div', { className: 'dialog-mask' }) : null,
                     !state.editMode ? _react2.default.createElement(
                         'div',
-                        { id: 'feedbackDialog', className: 'dialog', 'data-html2canvas-ignore': 'true',
-                            style: { left: '50%', top: '50%' } },
-                        _react2.default.createElement(
-                            'div',
-                            { className: 'title',
-                                style: { background: props.theme || '#3986FF' } },
-                            props.title || '问题反馈'
-                        ),
+                        {
+                            id: 'feedbackDialog', className: 'dialog', 'data-html2canvas-ignore': 'true',
+                            style: { left: '50%', top: '50%' }
+                        },
                         _react2.default.createElement(
                             'div',
                             { className: 'feedback-area' },
@@ -838,13 +860,124 @@ var Feedback = function (_React$Component) {
                                 { className: 'required-tip' },
                                 state.textError
                             ) : null,
-                            _react2.default.createElement('textarea', { placeholder: props.placeholder || '请说明您的问题或分享您的想法', ref: 'textarea', defaultValue: state.text,
+                            _react2.default.createElement(
+                                'div',
+                                {
+                                    className: 'feedback-label'
+                                },
+                                "Feedback"
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                {
+                                    className: 'feedback-description'
+                                },
+                                "Please tell us what you think, any kind of feedback is highly appreciated."
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                {
+                                    className: 'feedback-label'
+                                },
+                                "Title"
+                            ),
+                            _react2.default.createElement('textarea', {
+                                placeholder: props.titlePlaceholder || 'Enter title', ref: 'textarea', defaultValue: state.title,
+                                onChange: function onChange(e) {
+                                    _this12.setState({
+                                        title: e.target.value,
+                                        titleError: ''
+                                    });
+                                }
+                            }),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'shot-switch clearfix' },
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'radio', onClick: this.suggestHandle.bind(this) },
+                                    _react2.default.createElement(
+                                        'svg',
+                                        {
+                                            className: 'radio-icon ' + (state.suggestOn ? '' : 'active'),
+                                            focusable: 'false',
+                                            'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
+                                            width: '24'
+                                        },
+                                        _react2.default.createElement('path', {
+                                            d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z'
+                                        })
+                                    ),
+                                    _react2.default.createElement(
+                                        'svg',
+                                        {
+                                            className: 'radio-icon ' + (state.suggestOn ? 'active' : ''),
+                                            focusable: 'false',
+                                            'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
+                                            height: '24',
+                                            width: '24'
+                                        },
+                                        _react2.default.createElement('path', {
+                                            d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z'
+                                        })
+                                    )
+                                ),
+                                _react2.default.createElement(
+                                    'label',
+                                    null,
+                                    "Suggestion"
+                                ),
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'radio', onClick: this.suggestHandle.bind(this) },
+                                    _react2.default.createElement(
+                                        'svg',
+                                        {
+                                            className: 'radio-icon ' + (state.suggestOn ? 'active' : ''),
+                                            focusable: 'false',
+                                            'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
+                                            width: '24'
+                                        },
+                                        _react2.default.createElement('path', {
+                                            d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z'
+                                        })
+                                    ),
+                                    _react2.default.createElement(
+                                        'svg',
+                                        {
+                                            className: 'radio-icon ' + (state.suggestOn ? '' : 'active'),
+                                            focusable: 'false',
+                                            'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
+                                            height: '24',
+                                            width: '24'
+                                        },
+                                        _react2.default.createElement('path', {
+                                            d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z'
+                                        })
+                                    )
+                                ),
+                                _react2.default.createElement(
+                                    'label',
+                                    null,
+                                    "Bug"
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                {
+                                    className: 'feedback-label'
+                                },
+                                "Description"
+                            ),
+                            _react2.default.createElement('textarea', {
+                                placeholder: props.descriptionPlaceholder || 'Enter description', ref: 'textarea', defaultValue: state.text,
                                 onChange: function onChange(e) {
                                     _this12.setState({
                                         text: e.target.value,
                                         textError: ''
                                     });
-                                } }),
+                                }
+                            }),
                             _react2.default.createElement(
                                 'div',
                                 { className: 'shot-switch clearfix' },
@@ -853,22 +986,28 @@ var Feedback = function (_React$Component) {
                                     { className: 'checkbox', onClick: this.checkboxHandle.bind(this) },
                                     _react2.default.createElement(
                                         'svg',
-                                        { className: 'checkbox-icon ' + (state.shotOpen ? '' : 'active'),
+                                        {
+                                            className: 'checkbox-icon ' + (state.shotOpen ? '' : 'active'),
                                             focusable: 'false',
                                             'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
-                                            width: '24' },
+                                            width: '24'
+                                        },
                                         _react2.default.createElement('path', {
-                                            d: 'M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z' })
+                                            d: 'M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'
+                                        })
                                     ),
                                     _react2.default.createElement(
                                         'svg',
-                                        { className: 'checkbox-icon ' + (state.shotOpen ? 'active' : ''),
+                                        {
+                                            className: 'checkbox-icon ' + (state.shotOpen ? 'active' : ''),
                                             focusable: 'false',
                                             'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
                                             height: '24',
-                                            width: '24' },
+                                            width: '24'
+                                        },
                                         _react2.default.createElement('path', {
-                                            d: 'M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z' })
+                                            d: 'M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'
+                                        })
                                     )
                                 ),
                                 _react2.default.createElement(
@@ -888,19 +1027,23 @@ var Feedback = function (_React$Component) {
                                         { className: 'loading-icon' },
                                         _react2.default.createElement(
                                             'svg',
-                                            { viewBox: '0 0 40 40',
+                                            {
+                                                viewBox: '0 0 40 40',
                                                 style: {
                                                     width: '40px',
                                                     height: '40px',
                                                     position: 'relative'
-                                                } },
-                                            _react2.default.createElement('circle', { cx: '20', cy: '20', r: '18.25', fill: 'none',
+                                                }
+                                            },
+                                            _react2.default.createElement('circle', {
+                                                cx: '20', cy: '20', r: '18.25', fill: 'none',
                                                 strokeWidth: '3.5',
                                                 strokeMiterlimit: '20',
                                                 style: {
                                                     stroke: props.theme || 'rgb(57, 134, 255)',
                                                     strokeLnecap: 'round'
-                                                } })
+                                                }
+                                            })
                                         )
                                     ),
                                     _react2.default.createElement(
@@ -914,17 +1057,22 @@ var Feedback = function (_React$Component) {
                                     { className: 'screenshot' },
                                     state.screenshotEdit && !state.loading ? _react2.default.createElement(
                                         'div',
-                                        { className: 'to-edit',
-                                            onClick: this.toEditMode.bind(this) },
+                                        {
+                                            className: 'to-edit',
+                                            onClick: this.toEditMode.bind(this)
+                                        },
                                         _react2.default.createElement(
                                             'div',
                                             { className: 'edit-icon' },
                                             _react2.default.createElement(
                                                 'svg',
-                                                { focusable: 'false', 'aria-label': '', fill: '#757575',
-                                                    viewBox: '0 0 24 24', height: '48', width: '48' },
+                                                {
+                                                    focusable: 'false', 'aria-label': '', fill: '#757575',
+                                                    viewBox: '0 0 24 24', height: '48', width: '48'
+                                                },
                                                 _react2.default.createElement('path', {
-                                                    d: 'M21 17h-2.58l2.51 2.56c-.18.69-.73 1.26-1.41 1.44L17 18.5V21h-2v-6h6v2zM19 7h2v2h-2V7zm2-2h-2V3.08c1.1 0 2 .92 2 1.92zm-6-2h2v2h-2V3zm4 8h2v2h-2v-2zM9 21H7v-2h2v2zM5 9H3V7h2v2zm0-5.92V5H3c0-1 1-1.92 2-1.92zM5 17H3v-2h2v2zM9 5H7V3h2v2zm4 0h-2V3h2v2zm0 16h-2v-2h2v2zm-8-8H3v-2h2v2zm0 8.08C3.9 21.08 3 20 3 19h2v2.08z' })
+                                                    d: 'M21 17h-2.58l2.51 2.56c-.18.69-.73 1.26-1.41 1.44L17 18.5V21h-2v-6h6v2zM19 7h2v2h-2V7zm2-2h-2V3.08c1.1 0 2 .92 2 1.92zm-6-2h2v2h-2V3zm4 8h2v2h-2v-2zM9 21H7v-2h2v2zM5 9H3V7h2v2zm0-5.92V5H3c0-1 1-1.92 2-1.92zM5 17H3v-2h2v2zM9 5H7V3h2v2zm4 0h-2V3h2v2zm0 16h-2v-2h2v2zm-8-8H3v-2h2v2zm0 8.08C3.9 21.08 3 20 3 19h2v2.08z'
+                                                })
                                             )
                                         ),
                                         _react2.default.createElement(
@@ -936,7 +1084,7 @@ var Feedback = function (_React$Component) {
                                     _react2.default.createElement('img', { id: 'screenshotPrev', ref: 'screenshotPrev', src: '' })
                                 )
                             ) : null,
-                            _react2.default.createElement('div', { className: 'legal', dangerouslySetInnerHTML: { __html: this.props.license || '\u5982\u51FA\u4E8E\u6CD5\u5F8B\u539F\u56E0\u9700\u8981\u8BF7\u6C42\u66F4\u6539\u5185\u5BB9\uFF0C\u8BF7\u524D\u5F80<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u6CD5\u5F8B\u5E2E\u52A9</a>\u9875\u9762\u3002\u7CFB\u7EDF\u53EF\u80FD\u5DF2\u5C06\u90E8\u5206<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u5E10\u53F7\u548C\u7CFB\u7EDF\u4FE1\u606F</a>\u53D1\u9001\u7ED9\n                                        Google\u3002\u6211\u4EEC\u5C06\u6839\u636E\u81EA\u5DF1\u7684<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u9690\u79C1\u6743\u653F\u7B56</a>\u548C<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u670D\u52A1\u6761\u6B3E</a>\u4F7F\u7528\u60A8\u63D0\u4F9B\u7684\u4FE1\u606F\u5E2E\u52A9\u89E3\u51B3\u6280\u672F\u95EE\u9898\u548C\u6539\u8FDB\u6211\u4EEC\u7684\u670D\u52A1\u3002' } }),
+                            // ', dangerouslySetInnerHTML: { __html: this.props.license || '\u5982\u51FA\u4E8E\u6CD5\u5F8B\u539F\u56E0\u9700\u8981\u8BF7\u6C42\u66F4\u6539\u5185\u5BB9\uFF0C\u8BF7\u524D\u5F80<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u6CD5\u5F8B\u5E2E\u52A9</a>\u9875\u9762\u3002\u7CFB\u7EDF\u53EF\u80FD\u5DF2\u5C06\u90E8\u5206<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u5E10\u53F7\u548C\u7CFB\u7EDF\u4FE1\u606F</a>\u53D1\u9001\u7ED9\n                                        Google\u3002\u6211\u4EEC\u5C06\u6839\u636E\u81EA\u5DF1\u7684<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u9690\u79C1\u6743\u653F\u7B56</a>\u548C<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u670D\u52A1\u6761\u6B3E</a>\u4F7F\u7528\u60A8\u63D0\u4F9B\u7684\u4FE1\u606F\u5E2E\u52A9\u89E3\u51B3\u6280\u672F\u95EE\u9898\u548C\u6539\u8FDB\u6211\u4EEC\u7684\u670D\u52A1\u3002' } }),
                             _react2.default.createElement(
                                 'div',
                                 { className: 'actions' },
@@ -947,7 +1095,8 @@ var Feedback = function (_React$Component) {
                                 ),
                                 _react2.default.createElement(
                                     'div',
-                                    { className: 'flatbutton confirm',
+                                    {
+                                        className: 'flatbutton confirm',
                                         style: { color: this.props.theme || '#3986FF' },
                                         onClick: this.send.bind(this)
                                     },
@@ -960,13 +1109,16 @@ var Feedback = function (_React$Component) {
                         { ref: 'toolBar', className: 'tool-bar clearfix' },
                         _react2.default.createElement(
                             'div',
-                            { className: 'move',
+                            {
+                                className: 'move',
                                 onMouseDown: this.handleMoveMouseDown.bind(this)
                             },
                             _react2.default.createElement(
                                 'svg',
-                                { focusable: 'false', 'aria-label': 'Drag', fill: '#BDBDBD', height: '56', width: '16',
-                                    viewBox: '-2 2 12 12' },
+                                {
+                                    focusable: 'false', 'aria-label': 'Drag', fill: '#BDBDBD', height: '56', width: '16',
+                                    viewBox: '-2 2 12 12'
+                                },
                                 _react2.default.createElement('circle', { cx: '1.5', cy: '1.5', r: '1.5' }),
                                 _react2.default.createElement('circle', { cx: '1.5', cy: '7.5', r: '1.5' }),
                                 _react2.default.createElement('circle', { cx: '1.5', cy: '13.5', r: '1.5' }),
@@ -994,33 +1146,40 @@ var Feedback = function (_React$Component) {
                                         position: 'relative',
                                         height: '36px',
                                         width: '36px'
-                                    } },
+                                    }
+                                },
                                 _react2.default.createElement(
                                     'svg',
                                     {
                                         focusable: 'false', 'aria-label': '', viewBox: '0 0 24 24', height: '36', width: '36',
-                                        fill: '#FFEB3B' },
+                                        fill: '#FFEB3B'
+                                    },
                                     _react2.default.createElement('path', { d: 'M3 3h18v18H3z' })
                                 ),
                                 _react2.default.createElement(
                                     'svg',
-                                    { focusable: 'false', 'aria-label': '',
+                                    {
+                                        focusable: 'false', 'aria-label': '',
                                         fill: '#757575',
                                         viewBox: '0 0 24 24', height: '36',
                                         width: '36', style: {
                                             left: '0px',
                                             position: 'absolute',
                                             top: '0px'
-                                        } },
+                                        }
+                                    },
                                     this.state.toolBarType == 'hightlight' ? _react2.default.createElement('path', {
-                                        d: 'M21 17h-2.58l2.51 2.56c-.18.69-.73 1.26-1.41 1.44L17 18.5V21h-2v-6h6v2zM19 7h2v2h-2V7zm2-2h-2V3.08c1.1 0 2 .92 2 1.92zm-6-2h2v2h-2V3zm4 8h2v2h-2v-2zM9 21H7v-2h2v2zM5 9H3V7h2v2zm0-5.92V5H3c0-1 1-1.92 2-1.92zM5 17H3v-2h2v2zM9 5H7V3h2v2zm4 0h-2V3h2v2zm0 16h-2v-2h2v2zm-8-8H3v-2h2v2zm0 8.08C3.9 21.08 3 20 3 19h2v2.08z' }) : _react2.default.createElement('path', {
-                                        d: 'M3 3h18v18H3z', fill: '#FEEA4E' })
+                                        d: 'M21 17h-2.58l2.51 2.56c-.18.69-.73 1.26-1.41 1.44L17 18.5V21h-2v-6h6v2zM19 7h2v2h-2V7zm2-2h-2V3.08c1.1 0 2 .92 2 1.92zm-6-2h2v2h-2V3zm4 8h2v2h-2v-2zM9 21H7v-2h2v2zM5 9H3V7h2v2zm0-5.92V5H3c0-1 1-1.92 2-1.92zM5 17H3v-2h2v2zM9 5H7V3h2v2zm4 0h-2V3h2v2zm0 16h-2v-2h2v2zm-8-8H3v-2h2v2zm0 8.08C3.9 21.08 3 20 3 19h2v2.08z'
+                                    }) : _react2.default.createElement('path', {
+                                        d: 'M3 3h18v18H3z', fill: '#FEEA4E'
+                                    })
                                 )
                             )
                         ),
                         _react2.default.createElement(
                             'div',
-                            { className: 'tool ' + (this.state.toolBarType == 'black' ? 'tool-active' : '') + ' hide',
+                            {
+                                className: 'tool ' + (this.state.toolBarType == 'black' ? 'tool-active' : '') + ' hide',
                                 'data-label': props.hideTip || '隐藏敏感信息',
                                 onClick: function onClick() {
                                     _this12.setState({
@@ -1036,34 +1195,42 @@ var Feedback = function (_React$Component) {
                                         position: 'relative',
                                         height: '36px',
                                         width: '36px'
-                                    } },
+                                    }
+                                },
                                 this.state.toolBarType == 'black' ? _react2.default.createElement(
                                     _react2.default.Fragment,
                                     null,
                                     _react2.default.createElement(
                                         'svg',
-                                        { focusable: 'false', 'aria-label': '', viewBox: '0 0 24 24', height: '36',
-                                            width: '36', fill: '#000' },
+                                        {
+                                            focusable: 'false', 'aria-label': '', viewBox: '0 0 24 24', height: '36',
+                                            width: '36', fill: '#000'
+                                        },
                                         _react2.default.createElement('path', { d: 'M3 3h18v18H3z' })
                                     ),
                                     _react2.default.createElement(
                                         'svg',
-                                        { focusable: 'false', 'aria-label': '', fill: '#757575', viewBox: '0 0 24 24',
+                                        {
+                                            focusable: 'false', 'aria-label': '', fill: '#757575', viewBox: '0 0 24 24',
                                             height: '36', width: '36', style: {
                                                 left: '0px',
                                                 position: 'absolute',
                                                 top: '0px'
-                                            } },
+                                            }
+                                        },
                                         _react2.default.createElement('path', {
-                                            d: 'M21 17h-2.58l2.51 2.56c-.18.69-.73 1.26-1.41 1.44L17 18.5V21h-2v-6h6v2zM19 7h2v2h-2V7zm2-2h-2V3.08c1.1 0 2 .92 2 1.92zm-6-2h2v2h-2V3zm4 8h2v2h-2v-2zM9 21H7v-2h2v2zM5 9H3V7h2v2zm0-5.92V5H3c0-1 1-1.92 2-1.92zM5 17H3v-2h2v2zM9 5H7V3h2v2zm4 0h-2V3h2v2zm0 16h-2v-2h2v2zm-8-8H3v-2h2v2zm0 8.08C3.9 21.08 3 20 3 19h2v2.08z' })
+                                            d: 'M21 17h-2.58l2.51 2.56c-.18.69-.73 1.26-1.41 1.44L17 18.5V21h-2v-6h6v2zM19 7h2v2h-2V7zm2-2h-2V3.08c1.1 0 2 .92 2 1.92zm-6-2h2v2h-2V3zm4 8h2v2h-2v-2zM9 21H7v-2h2v2zM5 9H3V7h2v2zm0-5.92V5H3c0-1 1-1.92 2-1.92zM5 17H3v-2h2v2zM9 5H7V3h2v2zm4 0h-2V3h2v2zm0 16h-2v-2h2v2zm-8-8H3v-2h2v2zm0 8.08C3.9 21.08 3 20 3 19h2v2.08z'
+                                        })
                                     )
                                 ) : _react2.default.createElement(
                                     'svg',
                                     {
                                         focusable: 'false', 'aria-label': '', viewBox: '0 0 24 24', height: '36', width: '36',
-                                        fill: '#000' },
+                                        fill: '#000'
+                                    },
                                     _react2.default.createElement('path', {
-                                        d: 'M3 3h18v18H3z' })
+                                        d: 'M3 3h18v18H3z'
+                                    })
                                 )
                             )
                         ),
@@ -1072,8 +1239,10 @@ var Feedback = function (_React$Component) {
                             { className: 'button' },
                             _react2.default.createElement(
                                 'span',
-                                { className: 'flatbutton', draggable: 'false',
-                                    onClick: this.editCancel.bind(this) },
+                                {
+                                    className: 'flatbutton', draggable: 'false',
+                                    onClick: this.editCancel.bind(this)
+                                },
                                 props.editDoneLabel || '完成'
                             )
                         )
@@ -1084,21 +1253,26 @@ var Feedback = function (_React$Component) {
                         state.hightlightItem.map(function (data, k) {
                             return _react2.default.createElement(
                                 'div',
-                                { key: k, className: 'rect', style: {
+                                {
+                                    key: k, className: 'rect', style: {
                                         width: data.width + 'px',
                                         height: data.height + 'px',
                                         left: data.sx + 'px',
                                         top: data.sy + 'px'
-                                    } },
+                                    }
+                                },
                                 _react2.default.createElement(
                                     'span',
                                     { className: 'close', onClick: _this12.clearHightlight.bind(_this12, k) },
                                     _react2.default.createElement(
                                         'svg',
-                                        { viewBox: '0 0 1024 1024',
-                                            width: '16', height: '16' },
+                                        {
+                                            viewBox: '0 0 1024 1024',
+                                            width: '16', height: '16'
+                                        },
                                         _react2.default.createElement('path', {
-                                            d: 'M896 224l-96-96-288 288-288-288-96 96 288 288-288 288 96 96 288-288 288 288 96-96-288-288 288-288z' })
+                                            d: 'M896 224l-96-96-288 288-288-288-96 96 288 288-288 288 96 96 288-288 288 288 96-96-288-288 288-288z'
+                                        })
                                     )
                                 )
                             );
@@ -1110,21 +1284,26 @@ var Feedback = function (_React$Component) {
                         state.blackItem.map(function (data, k) {
                             return _react2.default.createElement(
                                 'div',
-                                { key: k, className: 'rect', style: {
+                                {
+                                    key: k, className: 'rect', style: {
                                         width: data.width + 'px',
                                         height: data.height + 'px',
                                         left: data.sx + 'px',
                                         top: data.sy + 'px'
-                                    } },
+                                    }
+                                },
                                 _react2.default.createElement(
                                     'span',
                                     { className: 'close', onClick: _this12.clearBlack.bind(_this12, k) },
                                     _react2.default.createElement(
                                         'svg',
-                                        { viewBox: '0 0 1024 1024',
-                                            width: '16', height: '16' },
+                                        {
+                                            viewBox: '0 0 1024 1024',
+                                            width: '16', height: '16'
+                                        },
                                         _react2.default.createElement('path', {
-                                            d: 'M896 224l-96-96-288 288-288-288-96 96 288 288-288 288 96 96 288-288 288 288 96-96-288-288 288-288z' })
+                                            d: 'M896 224l-96-96-288 288-288-288-96 96 288 288-288 288 96 96 288-288 288 288 96-96-288-288 288-288z'
+                                        })
                                     )
                                 )
                             );
@@ -1170,17 +1349,108 @@ var Feedback = function (_React$Component) {
                         _react2.default.createElement(
                             'div',
                             { className: 'feedback-area' },
+                            state.titleError ? _react2.default.createElement(
+                                'div',
+                                { className: 'required-tip' },
+                                state.titleError
+                            ) : null,
+                            _react2.default.createElement('textarea', {
+                                placeholder: props.placeholder || 'Enter text', ref: 'textarea', defaultValue: state.title, onChange: function onChange(e) {
+                                    _this12.setState({
+                                        title: e.target.value,
+                                        titleError: ''
+                                    });
+                                }
+                            })
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'feedback-area' },
                             state.textError ? _react2.default.createElement(
                                 'div',
                                 { className: 'required-tip' },
                                 state.textError
                             ) : null,
-                            _react2.default.createElement('textarea', { placeholder: props.placeholder || '请说明您的问题或分享您的想法', ref: 'textarea', defaultValue: state.text, onChange: function onChange(e) {
+                            _react2.default.createElement('textarea', {
+                                placeholder: props.placeholder || 'Enter text', ref: 'textarea', defaultValue: state.text, onChange: function onChange(e) {
                                     _this12.setState({
                                         text: e.target.value,
                                         textError: ''
                                     });
-                                } })
+                                }
+                            })
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'shot-switch clearfix' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'radio', onClick: this.suggestHandle.bind(this) },
+                                _react2.default.createElement(
+                                    'svg',
+                                    {
+                                        className: 'radio-icon ' + (state.suggestOn ? '' : 'active'),
+                                        focusable: 'false',
+                                        'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
+                                        width: '24'
+                                    },
+                                    _react2.default.createElement('path', {
+                                        d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z'
+                                    })
+                                ),
+                                _react2.default.createElement(
+                                    'svg',
+                                    {
+                                        className: 'radio-icon ' + (state.suggestOn ? 'active' : ''),
+                                        focusable: 'false',
+                                        'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
+                                        height: '24',
+                                        width: '24'
+                                    },
+                                    _react2.default.createElement('path', {
+                                        d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z'
+                                    })
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'label',
+                                null,
+                                "Suggestion"
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'radio', onClick: this.suggestHandle.bind(this) },
+                                _react2.default.createElement(
+                                    'svg',
+                                    {
+                                        className: 'radio-icon ' + (state.suggestOn ? 'active' : ''),
+                                        focusable: 'false',
+                                        'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
+                                        width: '24'
+                                    },
+                                    _react2.default.createElement('path', {
+                                        d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z'
+                                    })
+                                ),
+                                _react2.default.createElement(
+                                    'svg',
+                                    {
+                                        className: 'radio-icon ' + (state.suggestOn ? '' : 'active'),
+                                        focusable: 'false',
+                                        'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
+                                        height: '24',
+                                        width: '24'
+                                    },
+                                    _react2.default.createElement('path', {
+                                        d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z'
+                                    })
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'label',
+                                null,
+                                "Bug"
+                            ),
                         ),
                         _react2.default.createElement(
                             'div',
@@ -1193,18 +1463,24 @@ var Feedback = function (_React$Component) {
                                     { className: 'checkbox', onClick: this.checkboxHandle.bind(this) },
                                     _react2.default.createElement(
                                         'svg',
-                                        { className: 'checkbox-icon ' + (state.shotOpen ? '' : 'active'), focusable: 'false',
-                                            'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24', width: '24' },
+                                        {
+                                            className: 'checkbox-icon ' + (state.shotOpen ? '' : 'active'), focusable: 'false',
+                                            'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24', width: '24'
+                                        },
                                         _react2.default.createElement('path', {
-                                            d: 'M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z' })
+                                            d: 'M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'
+                                        })
                                     ),
                                     _react2.default.createElement(
                                         'svg',
-                                        { className: 'checkbox-icon ' + (state.shotOpen ? 'active' : ''), focusable: 'false',
+                                        {
+                                            className: 'checkbox-icon ' + (state.shotOpen ? 'active' : ''), focusable: 'false',
                                             'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24', height: '24',
-                                            width: '24' },
+                                            width: '24'
+                                        },
                                         _react2.default.createElement('path', {
-                                            d: 'M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z' })
+                                            d: 'M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'
+                                        })
                                     )
                                 ),
                                 _react2.default.createElement(
@@ -1222,9 +1498,11 @@ var Feedback = function (_React$Component) {
                                     _react2.default.createElement(
                                         'svg',
                                         { viewBox: '0 0 40 40', style: { width: '40px', height: '40px', position: 'relative' } },
-                                        _react2.default.createElement('circle', { cx: '20', cy: '20', r: '18.25', fill: 'none', strokeWidth: '3.5',
+                                        _react2.default.createElement('circle', {
+                                            cx: '20', cy: '20', r: '18.25', fill: 'none', strokeWidth: '3.5',
                                             strokeMiterlimit: '20',
-                                            style: { stroke: props.theme || 'rgb(57, 134, 255)', strokeLnecap: 'round' } })
+                                            style: { stroke: props.theme || 'rgb(57, 134, 255)', strokeLnecap: 'round' }
+                                        })
                                     )
                                 ) : null,
                                 _react2.default.createElement(
@@ -1235,12 +1513,14 @@ var Feedback = function (_React$Component) {
                             ) : null
                         )
                     ),
-                    _react2.default.createElement('div', { className: 'legal', dangerouslySetInnerHTML: { __html: this.props.license || '\u5982\u51FA\u4E8E\u6CD5\u5F8B\u539F\u56E0\u9700\u8981\u8BF7\u6C42\u66F4\u6539\u5185\u5BB9\uFF0C\u8BF7\u524D\u5F80<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u6CD5\u5F8B\u5E2E\u52A9</a>\u9875\u9762\u3002\u7CFB\u7EDF\u53EF\u80FD\u5DF2\u5C06\u90E8\u5206<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u5E10\u53F7\u548C\u7CFB\u7EDF\u4FE1\u606F</a>\u53D1\u9001\u7ED9\n                                        Google\u3002\u6211\u4EEC\u5C06\u6839\u636E\u81EA\u5DF1\u7684<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u9690\u79C1\u6743\u653F\u7B56</a>\u548C<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u670D\u52A1\u6761\u6B3E</a>\u4F7F\u7528\u60A8\u63D0\u4F9B\u7684\u4FE1\u606F\u5E2E\u52A9\u89E3\u51B3\u6280\u672F\u95EE\u9898\u548C\u6539\u8FDB\u6211\u4EEC\u7684\u670D\u52A1\u3002' } })
+                    // _react2.default.createElement('div', { className: 'legal', dangerouslySetInnerHTML: { __html: this.props.license || '\u5982\u51FA\u4E8E\u6CD5\u5F8B\u539F\u56E0\u9700\u8981\u8BF7\u6C42\u66F4\u6539\u5185\u5BB9\uFF0C\u8BF7\u524D\u5F80<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u6CD5\u5F8B\u5E2E\u52A9</a>\u9875\u9762\u3002\u7CFB\u7EDF\u53EF\u80FD\u5DF2\u5C06\u90E8\u5206<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u5E10\u53F7\u548C\u7CFB\u7EDF\u4FE1\u606F</a>\u53D1\u9001\u7ED9\n                                        Google\u3002\u6211\u4EEC\u5C06\u6839\u636E\u81EA\u5DF1\u7684<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u9690\u79C1\u6743\u653F\u7B56</a>\u548C<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u670D\u52A1\u6761\u6B3E</a>\u4F7F\u7528\u60A8\u63D0\u4F9B\u7684\u4FE1\u606F\u5E2E\u52A9\u89E3\u51B3\u6280\u672F\u95EE\u9898\u548C\u6539\u8FDB\u6211\u4EEC\u7684\u670D\u52A1\u3002' } })
                 ),
-                _react2.default.createElement('canvas', { ref: 'canvas', id: 'feedbackCanvas', 'data-html2canvas-ignore': 'true',
+                _react2.default.createElement('canvas', {
+                    ref: 'canvas', id: 'feedbackCanvas', 'data-html2canvas-ignore': 'true',
                     onMouseDown: this.canvasMouseDown.bind(this)
                 }),
-                _react2.default.createElement('canvas', { ref: 'shadowCanvas', id: 'shadowCanvas'
+                _react2.default.createElement('canvas', {
+                    ref: 'shadowCanvas', id: 'shadowCanvas'
                 }),
                 state.snackbar ? _react2.default.createElement(
                     'div',
