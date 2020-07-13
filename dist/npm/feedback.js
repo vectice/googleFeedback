@@ -196,7 +196,7 @@ var Feedback = function (_React$Component) {
             titleError: '',
             text: '',
             textError: '',
-            suggestOn: true,
+            currRadio: 'Suggestion',
             shotOpen: true,
             loading: false,
             screenshotEdit: false,
@@ -553,7 +553,21 @@ var Feedback = function (_React$Component) {
         key: 'suggestHandle',
         value: function suggestHandle() {
             this.setState({
-                suggestOn: !this.state.suggestOn
+                currRadio: "Suggestion"
+            });
+        }
+    }, {
+        key: 'bugHandle',
+        value: function bugHandle() {
+            this.setState({
+                currRadio: "Bug"
+            });
+        }
+    }, {
+        key: 'loveHandle',
+        value: function loveHandle() {
+            this.setState({
+                currRadio: "I Love It"
             });
         }
     }, {
@@ -815,7 +829,7 @@ var Feedback = function (_React$Component) {
                     sysInfo: this.sysInfo,
                     title: this.state.title,
                     text: this.state.text,
-                    type: this.state.suggestOn
+                    type: this.state.currRadio
                 };
                 if (this.state.shotOpen) {
                     data.shot = this.refs.screenshotPrev.src || '';
@@ -899,7 +913,7 @@ var Feedback = function (_React$Component) {
                                     _react2.default.createElement(
                                         'svg',
                                         {
-                                            className: 'radio-icon ' + (state.suggestOn ? '' : 'active'),
+                                            className: 'radio-icon ' + (state.currRadio == "Suggestion" ? '' : 'active'),
                                             focusable: 'false',
                                             'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
                                             width: '24'
@@ -911,7 +925,7 @@ var Feedback = function (_React$Component) {
                                     _react2.default.createElement(
                                         'svg',
                                         {
-                                            className: 'radio-icon ' + (state.suggestOn ? 'active' : ''),
+                                            className: 'radio-icon ' + (state.currRadio == "Suggestion" ? 'active' : ''),
                                             focusable: 'false',
                                             'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
                                             height: '24',
@@ -929,11 +943,11 @@ var Feedback = function (_React$Component) {
                                 ),
                                 _react2.default.createElement(
                                     'div',
-                                    { className: 'radio', onClick: this.suggestHandle.bind(this) },
+                                    { className: 'radio', onClick: this.bugHandle.bind(this) },
                                     _react2.default.createElement(
                                         'svg',
                                         {
-                                            className: 'radio-icon ' + (state.suggestOn ? 'active' : ''),
+                                            className: 'radio-icon ' + (state.currRadio == "Bug" ? 'active' : ''),
                                             focusable: 'false',
                                             'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
                                             width: '24'
@@ -945,7 +959,7 @@ var Feedback = function (_React$Component) {
                                     _react2.default.createElement(
                                         'svg',
                                         {
-                                            className: 'radio-icon ' + (state.suggestOn ? '' : 'active'),
+                                            className: 'radio-icon ' + (state.currRadio == "Bug" ? '' : 'active'),
                                             focusable: 'false',
                                             'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
                                             height: '24',
@@ -960,6 +974,40 @@ var Feedback = function (_React$Component) {
                                     'label',
                                     null,
                                     "Bug"
+                                ),
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'radio', onClick: this.loveHandle.bind(this) },
+                                    _react2.default.createElement(
+                                        'svg',
+                                        {
+                                            className: 'radio-icon ' + (state.currRadio == "I Love It" ? 'active' : ''),
+                                            focusable: 'false',
+                                            'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
+                                            width: '24'
+                                        },
+                                        _react2.default.createElement('path', {
+                                            d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z'
+                                        })
+                                    ),
+                                    _react2.default.createElement(
+                                        'svg',
+                                        {
+                                            className: 'radio-icon ' + (state.currRadio == "I Love It" ? '' : 'active'),
+                                            focusable: 'false',
+                                            'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
+                                            height: '24',
+                                            width: '24'
+                                        },
+                                        _react2.default.createElement('path', {
+                                            d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z'
+                                        })
+                                    )
+                                ),
+                                _react2.default.createElement(
+                                    'label',
+                                    null,
+                                    "I Love It"
                                 )
                             ),
                             _react2.default.createElement(
@@ -1389,7 +1437,7 @@ var Feedback = function (_React$Component) {
                                 _react2.default.createElement(
                                     'svg',
                                     {
-                                        className: 'radio-icon ' + (state.suggestOn ? '' : 'active'),
+                                        className: 'radio-icon ' + (state.currRadio == "Suggestion" ? '' : 'active'),
                                         focusable: 'false',
                                         'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
                                         width: '24'
@@ -1401,7 +1449,7 @@ var Feedback = function (_React$Component) {
                                 _react2.default.createElement(
                                     'svg',
                                     {
-                                        className: 'radio-icon ' + (state.suggestOn ? 'active' : ''),
+                                        className: 'radio-icon ' + (state.currRadio == "Suggestion" ? 'active' : ''),
                                         focusable: 'false',
                                         'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
                                         height: '24',
@@ -1419,11 +1467,11 @@ var Feedback = function (_React$Component) {
                             ),
                             _react2.default.createElement(
                                 'div',
-                                { className: 'radio', onClick: this.suggestHandle.bind(this) },
+                                { className: 'radio', onClick: this.bugHandle.bind(this) },
                                 _react2.default.createElement(
                                     'svg',
                                     {
-                                        className: 'radio-icon ' + (state.suggestOn ? 'active' : ''),
+                                        className: 'radio-icon ' + (state.currRadio == "Bug" ? 'active' : ''),
                                         focusable: 'false',
                                         'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
                                         width: '24'
@@ -1435,7 +1483,7 @@ var Feedback = function (_React$Component) {
                                 _react2.default.createElement(
                                     'svg',
                                     {
-                                        className: 'radio-icon ' + (state.suggestOn ? '' : 'active'),
+                                        className: 'radio-icon ' + (state.currRadio == "Bug" ? '' : 'active'),
                                         focusable: 'false',
                                         'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
                                         height: '24',
@@ -1450,6 +1498,40 @@ var Feedback = function (_React$Component) {
                                 'label',
                                 null,
                                 "Bug"
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'radio', onClick: this.loveHandle.bind(this) },
+                                _react2.default.createElement(
+                                    'svg',
+                                    {
+                                        className: 'radio-icon ' + (state.currRadio == "I Love It" ? 'active' : ''),
+                                        focusable: 'false',
+                                        'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
+                                        width: '24'
+                                    },
+                                    _react2.default.createElement('path', {
+                                        d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z'
+                                    })
+                                ),
+                                _react2.default.createElement(
+                                    'svg',
+                                    {
+                                        className: 'radio-icon ' + (state.currRadio == "I Love It" ? '' : 'active'),
+                                        focusable: 'false',
+                                        'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
+                                        height: '24',
+                                        width: '24'
+                                    },
+                                    _react2.default.createElement('path', {
+                                        d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z'
+                                    })
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'label',
+                                null,
+                                "I Love It"
                             ),
                         ),
                         _react2.default.createElement(
