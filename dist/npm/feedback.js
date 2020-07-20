@@ -21,6 +21,7 @@ var _html2canvas = require('html2canvas');
 var _html2canvas2 = _interopRequireDefault(_html2canvas);
 
 var _nZepto = require('n-zepto');
+const { wrap } = require('module');
 
 var _nZepto2 = _interopRequireDefault(_nZepto);
 
@@ -870,274 +871,289 @@ var Feedback = function (_React$Component) {
                         'div',
                         {
                             id: 'feedbackDialog', className: 'dialog', 'data-html2canvas-ignore': 'true',
-                            style: { left: '50%', top: '50%' }
+                            style: { left: '32%', top: '60%', width: '1000px', height: '350px' }
                         },
                         _react2.default.createElement(
                             'div',
-                            { className: 'feedback-area' },
+                            { 
+                                className: 'feedback-area',
+                                style: {display: 'flex', flexWrap: 'wrap',  height: '100%' }
+                            },
                             state.textError ? _react2.default.createElement(
                                 'div',
                                 { className: 'required-tip' },
                                 state.textError
                             ) : null,
+
                             _react2.default.createElement(
                                 'div',
                                 {
-                                    className: 'feedback-label'
+                                    className: 'feedback-label',
+                                    style: { width: '100%', textAlign: 'center', paddingBottom: '20px' }
                                 },
-                                "Feedback"
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                {
-                                    className: 'feedback-description'
-                                },
-                                "Please tell us what you think, any kind of feedback is highly appreciated."
+                                "Please help us improve Vectice by leaving your feedback"
                             ),
                             _react2.default.createElement(
                                 'div',
                                 {
-                                    className: 'feedback-label'
+                                    className: 'feedback-col',
+                                    style: { width: '50%' }
                                 },
-                                "Title"
-                            ),
-                            _react2.default.createElement('textarea', {
-                                placeholder: props.titlePlaceholder || 'Enter title', ref: 'textarea', defaultValue: state.title,
-                                onChange: function onChange(e) {
-                                    _this12.setState({
-                                        title: e.target.value,
-                                        titleError: ''
-                                    });
-                                }
-                            }),
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'shot-switch clearfix' },
-                                _react2.default.createElement(
+                                state.shotOpen ? _react2.default.createElement(
                                     'div',
-                                    { className: 'radio', onClick: this.suggestHandle.bind(this) },
-                                    _react2.default.createElement(
-                                        'svg',
-                                        {
-                                            className: 'radio-icon ' + (state.currRadio !== "Suggestion" ? 'active' : ''),
-                                            focusable: 'false',
-                                            'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
-                                            width: '24'
-                                        },
-                                        _react2.default.createElement('path', {
-                                            d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z'
-                                        })
-                                    ),
-                                    _react2.default.createElement(
-                                        'svg',
-                                        {
-                                            className: 'radio-icon ' + (state.currRadio === "Suggestion" ? 'active' : ''),
-                                            focusable: 'false',
-                                            'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
-                                            height: '24',
-                                            width: '24'
-                                        },
-                                        _react2.default.createElement('path', {
-                                            d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z'
-                                        })
-                                    )
-                                ),
-                                _react2.default.createElement(
-                                    'label',
-                                    null,
-                                    "Suggestion"
-                                ),
-                                _react2.default.createElement(
-                                    'div',
-                                    { className: 'radio', onClick: this.bugHandle.bind(this) },
-                                    _react2.default.createElement(
-                                        'svg',
-                                        {
-                                            className: 'radio-icon ' + (state.currRadio !== "Bug" ? 'active' : ''),
-                                            focusable: 'false',
-                                            'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
-                                            width: '24'
-                                        },
-                                        _react2.default.createElement('path', {
-                                            d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z'
-                                        })
-                                    ),
-                                    _react2.default.createElement(
-                                        'svg',
-                                        {
-                                            className: 'radio-icon ' + (state.currRadio === "Bug" ? 'active' : ''),
-                                            focusable: 'false',
-                                            'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
-                                            height: '24',
-                                            width: '24'
-                                        },
-                                        _react2.default.createElement('path', {
-                                            d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z'
-                                        })
-                                    )
-                                ),
-                                _react2.default.createElement(
-                                    'label',
-                                    null,
-                                    "Bug"
-                                ),
-                                _react2.default.createElement(
-                                    'div',
-                                    { className: 'radio', onClick: this.loveHandle.bind(this) },
-                                    _react2.default.createElement(
-                                        'svg',
-                                        {
-                                            className: 'radio-icon ' + (state.currRadio !== "I Love It" ? 'active' : ''),
-                                            focusable: 'false',
-                                            'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
-                                            width: '24'
-                                        },
-                                        _react2.default.createElement('path', {
-                                            d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z'
-                                        })
-                                    ),
-                                    _react2.default.createElement(
-                                        'svg',
-                                        {
-                                            className: 'radio-icon ' + (state.currRadio === "I Love It" ? 'active' : ''),
-                                            focusable: 'false',
-                                            'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
-                                            height: '24',
-                                            width: '24'
-                                        },
-                                        _react2.default.createElement('path', {
-                                            d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z'
-                                        })
-                                    )
-                                ),
-                                _react2.default.createElement(
-                                    'label',
-                                    null,
-                                    "I Love It"
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                {
-                                    className: 'feedback-label'
-                                },
-                                "Description"
-                            ),
-                            _react2.default.createElement('textarea', {
-                                placeholder: props.descriptionPlaceholder || 'Enter description', ref: 'textarea', defaultValue: state.text,
-                                onChange: function onChange(e) {
-                                    _this12.setState({
-                                        text: e.target.value,
-                                        textError: ''
-                                    });
-                                }
-                            }),
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'shot-switch clearfix' },
-                                _react2.default.createElement(
-                                    'div',
-                                    { className: 'checkbox', onClick: this.checkboxHandle.bind(this) },
-                                    _react2.default.createElement(
-                                        'svg',
-                                        {
-                                            className: 'checkbox-icon ' + (state.shotOpen ? '' : 'active'),
-                                            focusable: 'false',
-                                            'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
-                                            width: '24'
-                                        },
-                                        _react2.default.createElement('path', {
-                                            d: 'M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'
-                                        })
-                                    ),
-                                    _react2.default.createElement(
-                                        'svg',
-                                        {
-                                            className: 'checkbox-icon ' + (state.shotOpen ? 'active' : ''),
-                                            focusable: 'false',
-                                            'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
-                                            height: '24',
-                                            width: '24'
-                                        },
-                                        _react2.default.createElement('path', {
-                                            d: 'M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'
-                                        })
-                                    )
-                                ),
-                                _react2.default.createElement(
-                                    'label',
-                                    null,
-                                    props.checkboxLabel || '包含截图'
-                                )
-                            ),
-                            state.shotOpen ? _react2.default.createElement(
-                                'div',
-                                { className: 'screenshot-area' },
-                                state.loading ? _react2.default.createElement(
-                                    'div',
-                                    { className: 'loading' },
-                                    _react2.default.createElement(
+                                    { className: 'screenshot-area', style: {height: '350px', padding: '10px', margin: '10px'} },
+                                    // state.loading ? _
+                                    state.loading ? _react2.default.createElement(
                                         'div',
-                                        { className: 'loading-icon' },
-                                        _react2.default.createElement(
-                                            'svg',
-                                            {
-                                                viewBox: '0 0 40 40',
-                                                style: {
-                                                    width: '40px',
-                                                    height: '40px',
-                                                    position: 'relative'
-                                                }
-                                            },
-                                            _react2.default.createElement('circle', {
-                                                cx: '20', cy: '20', r: '18.25', fill: 'none',
-                                                strokeWidth: '3.5',
-                                                strokeMiterlimit: '20',
-                                                style: {
-                                                    stroke: props.theme || 'rgb(57, 134, 255)',
-                                                    strokeLnecap: 'round'
-                                                }
-                                            })
-                                        )
-                                    ),
-                                    _react2.default.createElement(
-                                        'span',
-                                        { className: 'loading-text' },
-                                        this.props.loadingTip || '正在加载屏幕截图...'
-                                    )
-                                ) : null,
-                                _react2.default.createElement(
-                                    'div',
-                                    { className: 'screenshot' },
-                                    state.screenshotEdit && !state.loading ? _react2.default.createElement(
-                                        'div',
-                                        {
-                                            className: 'to-edit',
-                                            onClick: this.toEditMode.bind(this)
-                                        },
+                                        { className: 'loading' },
                                         _react2.default.createElement(
                                             'div',
-                                            { className: 'edit-icon' },
+                                            { className: 'loading-icon' },
                                             _react2.default.createElement(
                                                 'svg',
                                                 {
-                                                    focusable: 'false', 'aria-label': '', fill: '#757575',
-                                                    viewBox: '0 0 24 24', height: '48', width: '48'
+                                                    viewBox: '0 0 40 40',
+                                                    style: {
+                                                        width: '40px',
+                                                        height: '40px',
+                                                        position: 'relative'
+                                                    }
                                                 },
-                                                _react2.default.createElement('path', {
-                                                    d: 'M21 17h-2.58l2.51 2.56c-.18.69-.73 1.26-1.41 1.44L17 18.5V21h-2v-6h6v2zM19 7h2v2h-2V7zm2-2h-2V3.08c1.1 0 2 .92 2 1.92zm-6-2h2v2h-2V3zm4 8h2v2h-2v-2zM9 21H7v-2h2v2zM5 9H3V7h2v2zm0-5.92V5H3c0-1 1-1.92 2-1.92zM5 17H3v-2h2v2zM9 5H7V3h2v2zm4 0h-2V3h2v2zm0 16h-2v-2h2v2zm-8-8H3v-2h2v2zm0 8.08C3.9 21.08 3 20 3 19h2v2.08z'
+                                                _react2.default.createElement('circle', {
+                                                    cx: '20', cy: '20', r: '18.25', fill: 'none',
+                                                    strokeWidth: '3.5',
+                                                    strokeMiterlimit: '20',
+                                                    style: {
+                                                        stroke: props.theme || 'rgb(57, 134, 255)',
+                                                        strokeLnecap: 'round'
+                                                    }
                                                 })
                                             )
                                         ),
                                         _react2.default.createElement(
                                             'span',
-                                            { className: 'edit-label' },
-                                            props.editTip || '点击编辑高亮或隐藏信息'
+                                            { className: 'loading-text' },
+                                            this.props.loadingTip || '正在加载屏幕截图...'
                                         )
                                     ) : null,
-                                    _react2.default.createElement('img', { id: 'screenshotPrev', ref: 'screenshotPrev', src: '' })
-                                )
-                            ) : null,
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'screenshot' },
+                                        state.screenshotEdit && !state.loading ? _react2.default.createElement(
+                                            'div',
+                                            {
+                                                className: 'to-edit',
+                                                onClick: this.toEditMode.bind(this)
+                                            },
+                                            _react2.default.createElement(
+                                                'div',
+                                                { className: 'edit-icon' },
+                                                _react2.default.createElement(
+                                                    'svg',
+                                                    {
+                                                        focusable: 'false', 'aria-label': '', fill: '#757575',
+                                                        viewBox: '0 0 24 24', height: '48', width: '48'
+                                                    },
+                                                    _react2.default.createElement('path', {
+                                                        d: 'M21 17h-2.58l2.51 2.56c-.18.69-.73 1.26-1.41 1.44L17 18.5V21h-2v-6h6v2zM19 7h2v2h-2V7zm2-2h-2V3.08c1.1 0 2 .92 2 1.92zm-6-2h2v2h-2V3zm4 8h2v2h-2v-2zM9 21H7v-2h2v2zM5 9H3V7h2v2zm0-5.92V5H3c0-1 1-1.92 2-1.92zM5 17H3v-2h2v2zM9 5H7V3h2v2zm4 0h-2V3h2v2zm0 16h-2v-2h2v2zm-8-8H3v-2h2v2zm0 8.08C3.9 21.08 3 20 3 19h2v2.08z'
+                                                    })
+                                                )
+                                            ),
+                                            _react2.default.createElement(
+                                                'span',
+                                                { className: 'edit-label' },
+                                                props.editTip || '点击编辑高亮或隐藏信息'
+                                            )
+                                        ) : null,
+                                        _react2.default.createElement('img', { id: 'screenshotPrev', ref: 'screenshotPrev', src: '' })
+                                    )
+                                ) : null,
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                {
+                                    className: 'feedback-col',
+                                    style: { width: '50%' }
+                                },
+                                _react2.default.createElement(
+                                    'div',
+                                    {
+                                        className: 'feedback-label'
+                                    },
+                                    "Title"
+                                ),
+                                _react2.default.createElement('textarea', {
+                                    style: {resize: 'none'},
+                                    placeholder: props.titlePlaceholder || 'Enter title', ref: 'textarea', defaultValue: state.title,
+                                    onChange: function onChange(e) {
+                                        _this12.setState({
+                                            title: e.target.value,
+                                            titleError: ''
+                                        });
+                                    }
+                                }),
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'shot-switch clearfix' },
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'radio', onClick: this.suggestHandle.bind(this) },
+                                        _react2.default.createElement(
+                                            'svg',
+                                            {
+                                                className: 'radio-icon ' + (state.currRadio !== "Suggestion" ? 'active' : ''),
+                                                focusable: 'false',
+                                                'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
+                                                width: '24'
+                                            },
+                                            _react2.default.createElement('path', {
+                                                d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z'
+                                            })
+                                        ),
+                                        _react2.default.createElement(
+                                            'svg',
+                                            {
+                                                className: 'radio-icon ' + (state.currRadio === "Suggestion" ? 'active' : ''),
+                                                focusable: 'false',
+                                                'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
+                                                height: '24',
+                                                width: '24'
+                                            },
+                                            _react2.default.createElement('path', {
+                                                d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z'
+                                            })
+                                        )
+                                    ),
+                                    _react2.default.createElement(
+                                        'label',
+                                        null,
+                                        "Suggestion"
+                                    ),
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'radio', onClick: this.bugHandle.bind(this) },
+                                        _react2.default.createElement(
+                                            'svg',
+                                            {
+                                                className: 'radio-icon ' + (state.currRadio !== "Bug" ? 'active' : ''),
+                                                focusable: 'false',
+                                                'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
+                                                width: '24'
+                                            },
+                                            _react2.default.createElement('path', {
+                                                d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z'
+                                            })
+                                        ),
+                                        _react2.default.createElement(
+                                            'svg',
+                                            {
+                                                className: 'radio-icon ' + (state.currRadio === "Bug" ? 'active' : ''),
+                                                focusable: 'false',
+                                                'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
+                                                height: '24',
+                                                width: '24'
+                                            },
+                                            _react2.default.createElement('path', {
+                                                d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z'
+                                            })
+                                        )
+                                    ),
+                                    _react2.default.createElement(
+                                        'label',
+                                        null,
+                                        "Bug"
+                                    ),
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'radio', onClick: this.loveHandle.bind(this) },
+                                        _react2.default.createElement(
+                                            'svg',
+                                            {
+                                                className: 'radio-icon ' + (state.currRadio !== "I Love It" ? 'active' : ''),
+                                                focusable: 'false',
+                                                'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
+                                                width: '24'
+                                            },
+                                            _react2.default.createElement('path', {
+                                                d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z'
+                                            })
+                                        ),
+                                        _react2.default.createElement(
+                                            'svg',
+                                            {
+                                                className: 'radio-icon ' + (state.currRadio === "I Love It" ? 'active' : ''),
+                                                focusable: 'false',
+                                                'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
+                                                height: '24',
+                                                width: '24'
+                                            },
+                                            _react2.default.createElement('path', {
+                                                d: 'M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z'
+                                            })
+                                        )
+                                    ),
+                                    _react2.default.createElement(
+                                        'label',
+                                        null,
+                                        "I Love It"
+                                    )
+                                ),
+                                _react2.default.createElement(
+                                    'div',
+                                    {
+                                        className: 'feedback-label'
+                                    },
+                                    "Description"
+                                ),
+                                _react2.default.createElement('textarea', {
+                                    style: {height: '150px', resize: 'none'},
+                                    placeholder: props.descriptionPlaceholder || 'Enter description', ref: 'textarea', defaultValue: state.text,
+                                    onChange: function onChange(e) {
+                                        _this12.setState({
+                                            text: e.target.value,
+                                            textError: ''
+                                        });
+                                    }
+                                }),
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'shot-switch clearfix' },
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'checkbox', onClick: this.checkboxHandle.bind(this) },
+                                        _react2.default.createElement(
+                                            'svg',
+                                            {
+                                                className: 'checkbox-icon ' + (state.shotOpen ? '' : 'active'),
+                                                focusable: 'false',
+                                                'aria-label': '', fill: '#757575', viewBox: '0 0 24 24', height: '24',
+                                                width: '24'
+                                            },
+                                            _react2.default.createElement('path', {
+                                                d: 'M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'
+                                            })
+                                        ),
+                                        _react2.default.createElement(
+                                            'svg',
+                                            {
+                                                className: 'checkbox-icon ' + (state.shotOpen ? 'active' : ''),
+                                                focusable: 'false',
+                                                'aria-label': '', fill: props.theme || '#3986FF', viewBox: '0 0 24 24',
+                                                height: '24',
+                                                width: '24'
+                                            },
+                                            _react2.default.createElement('path', {
+                                                d: 'M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'
+                                            })
+                                        )
+                                    ),
+                                    _react2.default.createElement(
+                                        'label',
+                                        null,
+                                        props.checkboxLabel || '包含截图'
+                                    )
+                                ),
+                            ),
                             // ', dangerouslySetInnerHTML: { __html: this.props.license || '\u5982\u51FA\u4E8E\u6CD5\u5F8B\u539F\u56E0\u9700\u8981\u8BF7\u6C42\u66F4\u6539\u5185\u5BB9\uFF0C\u8BF7\u524D\u5F80<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u6CD5\u5F8B\u5E2E\u52A9</a>\u9875\u9762\u3002\u7CFB\u7EDF\u53EF\u80FD\u5DF2\u5C06\u90E8\u5206<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u5E10\u53F7\u548C\u7CFB\u7EDF\u4FE1\u606F</a>\u53D1\u9001\u7ED9\n                                        Google\u3002\u6211\u4EEC\u5C06\u6839\u636E\u81EA\u5DF1\u7684<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u9690\u79C1\u6743\u653F\u7B56</a>\u548C<a href="" style="color: ' + (props.theme || '#3986FF') + '">\u670D\u52A1\u6761\u6B3E</a>\u4F7F\u7528\u60A8\u63D0\u4F9B\u7684\u4FE1\u606F\u5E2E\u52A9\u89E3\u51B3\u6280\u672F\u95EE\u9898\u548C\u6539\u8FDB\u6211\u4EEC\u7684\u670D\u52A1\u3002' } }),
                             _react2.default.createElement(
                                 'div',
