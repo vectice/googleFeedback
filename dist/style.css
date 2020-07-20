@@ -143,7 +143,7 @@
   user-select: none;
 }
 #googleFeedback .feedback-window .dialog {
-  width: 500px;
+  width: 700px;
   min-height: 443px;
   background: #fff;
   box-shadow: rgba(0, 0, 0, 0.137255) 0px 24px 38px 3px, rgba(0, 0, 0, 0.117647) 0px 9px 46px 8px,
@@ -164,6 +164,8 @@
   font-size: 16px;
 }
 #googleFeedback .feedback-window .feedback-area {
+  display: flex;
+  flex-wrap: wrap;
   width: 100%;
   padding: 0px 0px 0px 0px;
   position: relative;
@@ -176,7 +178,7 @@
   margin-left: 10px;
   margin-top: 20px;
 }
-#googleFeedback .feedback-window .dialog .feedback-area .feedback-label {
+#googleFeedback .feedback-window .dialog .feedback-area .feedback-col .feedback-label {
   line-height: 1;
   color: black;
   padding: 0px 16px;
@@ -185,7 +187,7 @@
   margin-left: 10px;
   margin-top: 20px;
 }
-#googleFeedback .feedback-window .feedback-area textarea {
+#googleFeedback .feedback-window .feedback-area .feedback-col textarea {
   padding: 18px 18px 0px 18px;
   display: block;
   width: 90%;
@@ -199,7 +201,7 @@
   margin-left: 20px;
   margin-right: 20px;
 }
-#googleFeedback .feedback-window .feedback-area textarea::-webkit-scrollbar {
+#googleFeedback .feedback-window .feedback-area .feedback-col textarea::-webkit-scrollbar {
   width: 5px;
   height: 5px;
   background-color: #f0f0f0;
@@ -280,7 +282,7 @@
 }
 #googleFeedback .feedback-window .screenshot-area {
   width: 100%;
-  height: 300px;
+  height: 350px;
   background: #eee;
   position: relative;
 }
