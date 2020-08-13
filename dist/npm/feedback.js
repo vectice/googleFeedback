@@ -819,6 +819,7 @@ var Feedback = function (_React$Component) {
                 this.setState({
                     titleError: this.props.requiredTip || 'Title must be added'
                 });
+                setTimeout(function () { alert("Please include a title."); }, 500);
                 this.refs.textarea.focus();
                 return;
             }
@@ -827,6 +828,7 @@ var Feedback = function (_React$Component) {
                 this.setState({
                     textError: this.props.requiredTip || 'Description must be added'
                 });
+                setTimeout(function () { alert("Please include a description."); }, 500);
                 this.refs.textarea.focus();
                 return;
             }
@@ -875,9 +877,9 @@ var Feedback = function (_React$Component) {
                         },
                         _react2.default.createElement(
                             'div',
-                            { 
+                            {
                                 className: 'feedback-area',
-                                style: {display: 'flex', flexWrap: 'wrap',  height: '100%' }
+                                style: { display: 'flex', flexWrap: 'wrap', height: '100%' }
                             },
                             state.textError ? _react2.default.createElement(
                                 'div',
@@ -901,7 +903,7 @@ var Feedback = function (_React$Component) {
                                 },
                                 state.shotOpen ? _react2.default.createElement(
                                     'div',
-                                    { className: 'screenshot-area', style: {height: '350px', padding: '10px', margin: '10px'} },
+                                    { className: 'screenshot-area', style: { height: '350px', padding: '10px', margin: '10px' } },
                                     // state.loading ? _
                                     state.loading ? _react2.default.createElement(
                                         'div',
@@ -983,7 +985,7 @@ var Feedback = function (_React$Component) {
                                     "Title"
                                 ),
                                 _react2.default.createElement('textarea', {
-                                    style: {resize: 'none'},
+                                    style: { resize: 'none' },
                                     placeholder: props.titlePlaceholder || 'Enter title', ref: 'textarea', defaultValue: state.title,
                                     onChange: function onChange(e) {
                                         _this12.setState({
@@ -1106,7 +1108,7 @@ var Feedback = function (_React$Component) {
                                     "Description"
                                 ),
                                 _react2.default.createElement('textarea', {
-                                    style: {height: '150px', resize: 'none'},
+                                    style: { height: '150px', resize: 'none' },
                                     placeholder: props.descriptionPlaceholder || 'Enter description', ref: 'textarea', defaultValue: state.text,
                                     onChange: function onChange(e) {
                                         _this12.setState({
