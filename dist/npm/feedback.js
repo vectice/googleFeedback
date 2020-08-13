@@ -881,11 +881,6 @@ var Feedback = function (_React$Component) {
                                 className: 'feedback-area',
                                 style: { display: 'flex', flexWrap: 'wrap', height: '100%' }
                             },
-                            state.textError ? _react2.default.createElement(
-                                'div',
-                                { className: 'required-tip' },
-                                state.textError
-                            ) : null,
 
                             _react2.default.createElement(
                                 'div',
@@ -1421,11 +1416,6 @@ var Feedback = function (_React$Component) {
                         _react2.default.createElement(
                             'div',
                             { className: 'feedback-area' },
-                            state.titleError ? _react2.default.createElement(
-                                'div',
-                                { className: 'required-tip' },
-                                state.titleError
-                            ) : null,
                             _react2.default.createElement('textarea', {
                                 placeholder: props.placeholder || 'Enter text', ref: 'textarea', defaultValue: state.title, onChange: function onChange(e) {
                                     _this12.setState({
@@ -1438,11 +1428,6 @@ var Feedback = function (_React$Component) {
                         _react2.default.createElement(
                             'div',
                             { className: 'feedback-area' },
-                            state.textError ? _react2.default.createElement(
-                                'div',
-                                { className: 'required-tip' },
-                                state.textError
-                            ) : null,
                             _react2.default.createElement('textarea', {
                                 placeholder: props.placeholder || 'Enter text', ref: 'textarea', defaultValue: state.text, onChange: function onChange(e) {
                                     _this12.setState({
